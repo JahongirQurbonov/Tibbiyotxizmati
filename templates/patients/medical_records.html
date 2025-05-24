@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Tibbiy yozuvlar - Tibbiy Markaz{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2>Tibbiy yozuvlar</h2>
+            <p class="lead">{{ patient.user.get_full_name }} ning tibbiy tarixi</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            {% if medical_records %}
+                {% for record in medical_records %}
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between">
+                                <h6 class="mb-0">{{ record.doctor }}</h6>
+                                <small class="text-muted">{{ record.created_at|date:"d.m.Y H:i" }}</small>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Tashxis:</h6>
+                                    <p>{{ record.diagnosis }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Davolash:</h6>
+                                    <p>{{ record.treatment }}</p>
+                                </div>
+                            </div>
+                            
+                            {% if record.prescription %}
+                                <div class="mt-3">
+                                    <h6>Retsept:</h6>
+                                    <p>{{ record.prescription }}</p>
+                                </div>
+                            {% endif %}
+                            
+                            {% if record.notes %}
+                                <div class="mt-3">
+                                    <h6>Izohlar:</h6>
+                                    <p>{{ record.notes }}</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="alert alert-info text-center">
+                    <h4>Tibbiy yozuvlar topilmadi</h4>
+                    <p>Hozircha sizda tibbiy yozuvlar yo'q.</p>
+                    <a href="{% url 'doctors:doctor_list' %}" class="btn btn-primary">Qabulga yoziling</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

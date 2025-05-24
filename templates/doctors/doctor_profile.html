@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}Shifokor profili - Tibbiy Markaz{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2>Shifokor profili</h2>
+            <p class="lead">Dr. {{ doctor.user.get_full_name }}</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Profil ma'lumotlari</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Ism:</strong> {{ doctor.user.first_name }}</p>
+                            <p><strong>Familiya:</strong> {{ doctor.user.last_name }}</p>
+                            <p><strong>Email:</strong> {{ doctor.user.email }}</p>
+                            <p><strong>Telefon:</strong> {{ doctor.user.phone|default:"Ko'rsatilmagan" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Mutaxassislik:</strong> {{ doctor.specialty|default:"Ko'rsatilmagan" }}</p>
+                            <p><strong>Litsenziya:</strong> {{ doctor.license_number|default:"Ko'rsatilmagan" }}</p>
+                            <p><strong>Tajriba:</strong> {{ doctor.experience_years }} yil</p>
+                            <p><strong>Konsultatsiya narxi:</strong> {{ doctor.consultation_fee }} so'm</p>
+                        </div>
+                    </div>
+                    
+                    {% if doctor.education %}
+                        <div class="mt-3">
+                            <p><strong>Ta'lim:</strong></p>
+                            <p>{{ doctor.education }}</p>
+                        </div>
+                    {% endif %}
+                    
+                    {% if doctor.bio %}
+                        <div class="mt-3">
+                            <p><strong>Biografiya:</strong></p>
+                            <p>{{ doctor.bio }}</p>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="mt-3">
+                        <a href="{% url 'doctors:edit_profile' %}" class="btn btn-primary">Profilni tahrirlash</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Ish jadvali</h5>
+                </div>
+                <div class="card-body">
+                    {% if schedules %}
+                        {% for schedule in schedules %}
+                            <div class="mb-2">
+                                <strong>{{ schedule.get_weekday_display }}:</strong>
+                                {{ schedule.start_time }} - {{ schedule.end_time }}
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">Ish jadvali belgilanmagan</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5>Statistika</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Jami bemorlar:</strong> {{ total_patients|default:0 }}</p>
+                    <p><strong>Bugungi qabullar:</strong> {{ today_appointments|default:0 }}</p>
+                    <p><strong>Holat:</strong> 
+                        {% if doctor.is_available %}
+                            <span class="badge bg-success">Mavjud</span>
+                        {% else %}
+                            <span class="badge bg-danger">Band</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Ro'yxatdan o'tish - Tibbiy Markaz{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">Ro'yxatdan O'tish Turini Tanlang</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100 border-primary">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-user-injured fa-4x text-primary mb-3"></i>
+                                    <h4>Bemor sifatida</h4>
+                                    <p class="card-text">Tibbiy xizmatlardan foydalanish, qabulga yozilish va tibbiy yozuvlaringizni kuzatish</p>
+                                    <a href="{% url 'accounts:register_patient' %}" class="btn btn-primary">Bemor ro'yxati</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100 border-success">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-user-md fa-4x text-success mb-3"></i>
+                                    <h4>Shifokor sifatida</h4>
+                                    <p class="card-text">Bemorlarni qabul qilish, tibbiy xizmatlar ko'rsatish va tibbiy yozuvlar yuritish</p>
+                                    <a href="{% url 'accounts:register_doctor' %}" class="btn btn-success">Shifokor ro'yxati</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-3">
+                        <p>Hisobingiz bormi? <a href="{% url 'accounts:login' %}">Kirish</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

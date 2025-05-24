@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Qabullar - Tibbiy Markaz{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2>Qabullar</h2>
+            {% if user.role == 'patient' %}
+                <p class="lead">Sizning qabullaringiz</p>
+            {% elif user.role == 'doctor' %}
+                <p class="lead">Sizning bemorlaringiz qabullari</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            {% if appointments %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                {% if user.role == 'patient' %}
+                                    <th>Shifokor</th>
+                                {% elif user.role == 'doctor' %}
+                                    <th>Bemor</th>
+                                {% else %}
+                                    <th>Shifokor</th>
+                                    <th>Bemor</th>
+                                {% endif %}
+                                <th>Sana</th>
+                                <th>Vaqt</th>
+                                <th>Holat</th>
+                                <th>Sabab</th>
+                                <th>Amallar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appointment in appointments %}
+                            <tr>
+                                {% if user.role == 'patient' %}
+                                    <td>{{ appointment.doctor }}</td>
+                                {% elif user.role == 'doctor' %}
+                                    <td>{{ appointment.patient.user.get_full_name }}</td>
+                                {% else %}
+                                    <td>{{ appointment.doctor }}</td>
+                                    <td>{{ appointment.patient.user.get_full_name }}</td>
+                                {% endif %}
+                                <td>{{ appointment.appointment_date }}</td>
+                                <td>{{ appointment.appointment_time }}</td>
+                                <td>
+                                    <span class="badge bg-{% if appointment.status == 'completed' %}success{% elif appointment.status == 'confirmed' %}info{% elif appointment.status == 'cancelled' %}danger{% else %}warning{% endif %}">
+                                        {{ appointment.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>{{ appointment.reason|truncatewords:5 }}</td>
+                                <td>
+                                    <a href="{% url 'appointments:appointment_detail' appointment.id %}" class="btn btn-sm btn-outline-primary">Ko'rish</a>
+                                    {% if appointment.status not in 'completed,cancelled' %}
+                                        <a href="{% url 'appointments:cancel_appointment' appointment.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Qabulni bekor qilishni xohlaysizmi?')">Bekor qilish</a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info text-center">
+                    <h4>Qabullar topilmadi</h4>
+                    {% if user.role == 'patient' %}
+                        <p>Hozircha qabullaringiz yo'q.</p>
+                        <a href="{% url 'doctors:doctor_list' %}" class="btn btn-primary">Qabulga yozilish</a>
+                    {% else %}
+                        <p>Hozircha qabullar yo'q.</p>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

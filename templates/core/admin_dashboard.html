@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - Tibbiy Markaz{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2>Admin Dashboard</h2>
+            <p class="lead">Xush kelibsiz, {{ user.get_full_name }}!</p>
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4>{{ total_doctors }}</h4>
+                            <p>Jami shifokorlar</p>
+                        </div>
+                        <div>
+                            <i class="fas fa-user-md fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4>{{ total_patients }}</h4>
+                            <p>Jami bemorlar</p>
+                        </div>
+                        <div>
+                            <i class="fas fa-users fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4>{{ total_appointments }}</h4>
+                            <p>Jami qabullar</p>
+                        </div>
+                        <div>
+                            <i class="fas fa-calendar fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Appointments -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>So'nggi qabullar</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_appointments %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Bemor</th>
+                                        <th>Shifokor</th>
+                                        <th>Sana</th>
+                                        <th>Vaqt</th>
+                                        <th>Holat</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for appointment in recent_appointments %}
+                                    <tr>
+                                        <td>{{ appointment.patient.user.get_full_name }}</td>
+                                        <td>{{ appointment.doctor }}</td>
+                                        <td>{{ appointment.appointment_date }}</td>
+                                        <td>{{ appointment.appointment_time }}</td>
+                                        <td>
+                                            <span class="badge bg-{% if appointment.status == 'completed' %}success{% elif appointment.status == 'confirmed' %}info{% elif appointment.status == 'cancelled' %}danger{% else %}warning{% endif %}">
+                                                {{ appointment.get_status_display }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">Hozircha qabullar yo'q.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}Bemor Dashboard - Tibbiy Markaz{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2>Bemor Dashboard</h2>
+            <p class="lead">Xush kelibsiz, {{ user.get_full_name }}!</p>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-calendar-plus fa-3x text-primary mb-3"></i>
+                    <h5>Qabulga yozilish</h5>
+                    <p>Shifokor tanlang va qabulga yoziling</p>
+                    <a href="{% url 'doctors:doctor_list' %}" class="btn btn-primary">Shifokor tanlash</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-file-medical fa-3x text-success mb-3"></i>
+                    <h5>Tibbiy yozuvlar</h5>
+                    <p>Tibbiy tarixingizni ko'ring</p>
+                    <a href="{% url 'patients:medical_records' %}" class="btn btn-success">Ko'rish</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-user-edit fa-3x text-info mb-3"></i>
+                    <h5>Profil</h5>
+                    <p>Shaxsiy ma'lumotlaringizni tahrirlang</p>
+                    <a href="{% url 'patients:patient_profile' %}" class="btn btn-info">Tahrirlash</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Appointments -->
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5>So'nggi qabullar</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_appointments %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Shifokor</th>
+                                        <th>Sana</th>
+                                        <th>Vaqt</th>
+                                        <th>Holat</th>
+                                        <th>Amal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for appointment in recent_appointments %}
+                                    <tr>
+                                        <td>{{ appointment.doctor }}</td>
+                                        <td>{{ appointment.appointment_date }}</td>
+                                        <td>{{ appointment.appointment_time }}</td>
+                                        <td>
+                                            <span class="badge bg-{% if appointment.status == 'completed' %}success{% elif appointment.status == 'confirmed' %}info{% elif appointment.status == 'cancelled' %}danger{% else %}warning{% endif %}">
+                                                {{ appointment.get_status_display }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'appointments:appointment_detail' appointment.id %}" class="btn btn-sm btn-outline-primary">Ko'rish</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-center">
+                            <a href="{% url 'appointments:appointment_list' %}" class="btn btn-primary">Barcha qabullar</a>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">Hozircha qabullar yo'q.</p>
+                        <a href="{% url 'doctors:doctor_list' %}" class="btn btn-primary">Birinchi qabulga yoziling</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Tibbiy ma'lumotlar</h5>
+                </div>
+                <div class="card-body">
+                    {% if medical_records %}
+                        <p><strong>So'nggi tibbiy yozuvlar:</strong></p>
+                        {% for record in medical_records %}
+                            <div class="border-bottom pb-2 mb-2">
+                                <small class="text-muted">{{ record.created_at|date:"d.m.Y" }}</small>
+                                <p class="mb-1"><strong>{{ record.doctor }}</strong></p>
+                                <p class="mb-0">{{ record.diagnosis|truncatewords:10 }}</p>
+                            </div>
+                        {% endfor %}
+                        <a href="{% url 'patients:medical_records' %}" class="btn btn-sm btn-outline-success">Barchasini ko'rish</a>
+                    {% else %}
+                        <p class="text-muted">Hozircha tibbiy yozuvlar yo'q.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

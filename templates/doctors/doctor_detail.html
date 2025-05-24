@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ doctor }} - Tibbiy Markaz{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-user-md fa-4x text-primary mb-3"></i>
+                        <h2>{{ doctor }}</h2>
+                        {% if doctor.specialty %}
+                            <p class="lead text-muted">{{ doctor.specialty.name }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Ma'lumotlar</h5>
+                            <p><strong>Tajriba:</strong> {{ doctor.experience_years }} yil</p>
+                            <p><strong>Konsultatsiya narxi:</strong> {{ doctor.consultation_fee }} so'm</p>
+                            {% if doctor.license_number %}
+                                <p><strong>Litsenziya:</strong> {{ doctor.license_number }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Aloqa</h5>
+                            {% if doctor.user.phone %}
+                                <p><strong>Telefon:</strong> {{ doctor.user.phone }}</p>
+                            {% endif %}
+                            <p><strong>Email:</strong> {{ doctor.user.email }}</p>
+                        </div>
+                    </div>
+                    
+                    {% if doctor.education %}
+                        <div class="mt-4">
+                            <h5>Ta'lim</h5>
+                            <p>{{ doctor.education }}</p>
+                        </div>
+                    {% endif %}
+                    
+                    {% if doctor.bio %}
+                        <div class="mt-4">
+                            <h5>Biografiya</h5>
+                            <p>{{ doctor.bio }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    {% if user.is_authenticated and user.role == 'patient' %}
+                        <a href="{% url 'appointments:book_appointment' doctor.id %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-calendar-plus"></i> Qabulga yozilish
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Ish jadvali</h5>
+                </div>
+                <div class="card-body">
+                    {% if schedules %}
+                        {% for schedule in schedules %}
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>{{ schedule.get_weekday_display }}</span>
+                                <span>{{ schedule.start_time }} - {{ schedule.end_time }}</span>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">Ish jadvali belgilanmagan</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5>Holat</h5>
+                </div>
+                <div class="card-body text-center">
+                    {% if doctor.is_available %}
+                        <span class="badge bg-success fs-6">Mavjud</span>
+                        <p class="mt-2 text-muted">Qabulga yozilish mumkin</p>
+                    {% else %}
+                        <span class="badge bg-danger fs-6">Band</span>
+                        <p class="mt-2 text-muted">Hozircha qabul qilmaydi</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

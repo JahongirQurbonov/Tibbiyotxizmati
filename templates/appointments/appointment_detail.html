@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}Qabul tafsilotlari - Tibbiy Markaz{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Qabul tafsilotlari</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Bemor ma'lumotlari:</h5>
+                            <p><strong>Ism:</strong> {{ appointment.patient.user.get_full_name }}</p>
+                            <p><strong>Email:</strong> {{ appointment.patient.user.email }}</p>
+                            <p><strong>Telefon:</strong> {{ appointment.patient.user.phone|default:"Ko'rsatilmagan" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Shifokor ma'lumotlari:</h5>
+                            <p><strong>Shifokor:</strong> {{ appointment.doctor }}</p>
+                            <p><strong>Mutaxassislik:</strong> {{ appointment.doctor.specialty|default:"Ko'rsatilmagan" }}</p>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Qabul ma'lumotlari:</h5>
+                            <p><strong>Sana:</strong> {{ appointment.appointment_date }}</p>
+                            <p><strong>Vaqt:</strong> {{ appointment.appointment_time }}</p>
+                            <p><strong>Holat:</strong> 
+                                <span class="badge bg-{% if appointment.status == 'completed' %}success{% elif appointment.status == 'confirmed' %}info{% elif appointment.status == 'cancelled' %}danger{% else %}warning{% endif %}">
+                                    {{ appointment.get_status_display }}
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Qo'shimcha ma'lumotlar:</h5>
+                            <p><strong>Yaratilgan:</strong> {{ appointment.created_at|date:"d.m.Y H:i" }}</p>
+                            {% if appointment.updated_at != appointment.created_at %}
+                                <p><strong>Yangilangan:</strong> {{ appointment.updated_at|date:"d.m.Y H:i" }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    {% if appointment.reason %}
+                        <div class="mt-3">
+                            <h5>Murojaat sababi:</h5>
+                            <p>{{ appointment.reason }}</p>
+                        </div>
+                    {% endif %}
+                    
+                    {% if appointment.notes %}
+                        <div class="mt-3">
+                            <h5>Izohlar:</h5>
+                            <p>{{ appointment.notes }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'appointments:appointment_list' %}" class="btn btn-secondary">Orqaga</a>
+                        {% if appointment.status not in 'completed,cancelled' %}
+                            <a href="{% url 'appointments:cancel_appointment' appointment.id %}" 
+                               class="btn btn-danger" 
+                               onclick="return confirm('Qabulni bekor qilishni xohlaysizmi?')">
+                                Bekor qilish
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

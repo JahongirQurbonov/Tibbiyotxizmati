@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Bemorlar ro'yxati - Tibbiy Markaz{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2>Bemorlar ro'yxati</h2>
+            <p class="lead">Barcha ro'yxatdan o'tgan bemorlar</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            {% if patients %}
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Bemorlar ({{ patients.count }} ta)</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Bemor</th>
+                                        <th>Email</th>
+                                        <th>Telefon</th>
+                                        <th>Jinsi</th>
+                                        <th>Qon guruhi</th>
+                                        <th>Ro'yxatdan o'tgan</th>
+                                        <th>Amallar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for patient in patients %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ patient.user.get_full_name }}</strong>
+                                        </td>
+                                        <td>{{ patient.user.email }}</td>
+                                        <td>{{ patient.user.phone|default:"-" }}</td>
+                                        <td>{{ patient.get_gender_display|default:"-" }}</td>
+                                        <td>{{ patient.blood_type|default:"-" }}</td>
+                                        <td>{{ patient.created_at|date:"d.m.Y" }}</td>
+                                        <td>
+                                            <a href="{% url 'patients:patient_detail' patient.id %}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye"></i> Ko'rish
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="alert alert-info text-center">
+                    <h4>Bemorlar topilmadi</h4>
+                    <p>Hozircha ro'yxatdan o'tgan bemorlar yo'q.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
